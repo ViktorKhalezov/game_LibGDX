@@ -1,49 +1,31 @@
 package com.star.app;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.star.app.game.Asteroid;
+import com.star.app.game.Background;
+import com.star.app.game.Hero;
+import com.star.app.screen.GameScreen;
 
-public class StarGame extends ApplicationAdapter {
+public class StarGame extends Game {
 	private SpriteBatch batch;
-	private Background background;
-	private Hero hero;
-	private Asteroid asteroid;
+	private GameScreen gameScreen;
 
-	public Hero getHero() {
-		return hero;
-	}
-
-	public Asteroid getAsteroid() {
-		return asteroid;
-	}
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		background = new Background(this);
-		hero = new Hero();
-		asteroid = new Asteroid();
+		this.gameScreen = new GameScreen(batch);
+		setScreen(gameScreen);
 	}
 
 	@Override
 	public void render () {
 		float dt = Gdx.graphics.getDeltaTime();
-		update(dt);
-		ScreenUtils.clear(0, 0, 0.5f, 1);
-		batch.begin();
-		background.render(batch);
-		hero.render(batch);
-		asteroid.render(batch);
-		batch.end();
-	}
-
-	public void update(float dt){
-		background.update(dt);
-		hero.update(dt);
-		asteroid.update(dt);
+		gameScreen.render(dt);
 	}
 
 	@Override
