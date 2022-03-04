@@ -2,6 +2,7 @@ package com.star.app.game;
 
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.star.app.screen.ScreenManager;
 
 public class GameController {
@@ -44,7 +45,10 @@ public class GameController {
         bulletController.update(dt);
         asteroidController.update(dt);
         hero.update(dt);
+        Thread thread = new ParallelCollisionControl();
+        thread.start();
         checkCollisions();
+
     }
 
 
@@ -62,6 +66,35 @@ public class GameController {
                 }
             }
         }
+
+
     }
+
+
+    private void heroAsteroidCollisions() {
+        for (int i = 0; i < asteroidController.getActiveList().size(); i++) {
+            Asteroid a = asteroidController.getActiveList().get(i);
+            if(a.getHitArea().overlaps(hero.getHitArea())) {
+                int curretHeroHp = (int) (getHero().getHp() - 30 * a.getScale());
+                hero.setHp(curretHeroHp);
+                if(curretHeroHp <= 0) {
+                  hero.setPosition(new Vector2(0, 0));
+                  hero.setHp(hero.getHpMax());
+                }
+                a.deactivate();
+                break;
+            }
+        }
+    }
+
+
+    private class ParallelCollisionControl extends Thread {
+
+        @Override
+        public void run() {
+            heroAsteroidCollisions();
+        }
+    }
+
 
 }
