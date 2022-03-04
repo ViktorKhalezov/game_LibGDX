@@ -5,32 +5,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.star.app.game.helpers.ObjectPool;
 
 public class AsteroidController extends ObjectPool<Asteroid> {
-    private Texture asteroidTexture;
-
-    public AsteroidController() {
-        this.asteroidTexture = new Texture("asteroid.png");
-    }
+    private GameController gc;
 
     @Override
     protected Asteroid newObject() {
-        return new Asteroid();
+        return new Asteroid(gc);
+    }
+
+    public AsteroidController(GameController gc) {
+        this.gc = gc;
     }
 
     public void render(SpriteBatch batch) {
-        for(int i = 0; i < activeList.size(); i++) {
-            Asteroid asteroid = activeList.get(i);
-            asteroid.render(batch);
+        for (int i = 0; i < activeList.size(); i++) {
+            Asteroid a = activeList.get(i);
+            a.render(batch);
         }
     }
 
-    public void setUp() {
-        if(activeList.size() == 0) {
-            getActiveElement().activate();
-        }
+    public void setup(float x, float y, float vx, float vy, float scale){
+        getActiveElement().activate(x, y, vx, vy, scale);
     }
 
     public void update(float dt) {
-        for(int i = 0; i < activeList.size(); i++) {
+        for (int i = 0; i < activeList.size(); i++) {
             activeList.get(i).update(dt);
         }
         checkPool();
