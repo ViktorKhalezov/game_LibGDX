@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.app.screen.ScreenManager;
@@ -11,6 +12,8 @@ import com.star.app.screen.utils.Assets;
 
 
 public class Hero {
+    private final float BASE_SIZE = 64.0f;
+    private final float BASE_RADIUS = BASE_SIZE / 2;
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
@@ -20,6 +23,30 @@ public class Hero {
     private float fireTimer;
     private int score;
     private int scoreView;
+    private int hpMax;
+    private int hp;
+    private Circle hitArea;
+
+
+    public int getHpMax() {
+        return hpMax;
+    }
+
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public Circle getHitArea() {
+        return hitArea;
+    }
 
     public int getScore() {
         return score;
@@ -48,6 +75,9 @@ public class Hero {
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 700.0f;
+        this.hpMax = 100;
+        this.hp = hpMax;
+        this.hitArea = new Circle(position.x, position.y, BASE_RADIUS * 0.9f);
     }
 
     public void addScore(int amount) {
@@ -66,6 +96,7 @@ public class Hero {
             if (scoreView > score) {
                 scoreView = score;
             }
+
         }
 
 
@@ -99,6 +130,7 @@ public class Hero {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
             velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
             velocity.x -= MathUtils.cosDeg(angle) * (enginePower / 2) * dt;
@@ -106,6 +138,7 @@ public class Hero {
         }
 
         position.mulAdd(velocity, dt);
+        hitArea.setPosition(position);
         float stopKoef = 1.0f - dt;
         if (stopKoef < 0.0f) {
             stopKoef = 0.0f;
@@ -133,5 +166,6 @@ public class Hero {
             velocity.y *= -0.5f;
         }
     }
+
 
 }
