@@ -30,6 +30,14 @@ public class Weapon {
         return curBullets;
     }
 
+    public void addBullets(int amount) {
+        curBullets += amount;
+    }
+
+    public void setCurBullets(int curBullets) {
+        this.curBullets = curBullets;
+    }
+
     public Weapon(GameController gc, Hero hero, float firePeriod, int damage,
                   float bulletSpeed, int maxBullets, Vector3[] slots) {
         this.gc = gc;

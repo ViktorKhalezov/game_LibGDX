@@ -17,16 +17,37 @@ ship
   orig: 64, 64
   offset: 0, 0
   index: -1
-bullet
+coin
   rotate: false
   xy: 326, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-star16
+bullet
+  rotate: false
+  xy: 360, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cure
   rotate: false
   xy: 326, 36
+  size: 32, 27
+  orig: 32, 27
+  offset: 0, 0
+  index: -1
+ammo
+  rotate: false
+  xy: 360, 36
+  size: 32, 19
+  orig: 32, 19
+  offset: 0, 0
+  index: -1
+star16
+  rotate: false
+  xy: 394, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
