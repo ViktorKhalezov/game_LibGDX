@@ -48,6 +48,10 @@ public class Asteroid implements Poolable {
         return position;
     }
 
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
     public Asteroid(GameController gc) {
         this.gc = gc;
         this.position = new Vector2();
@@ -115,5 +119,6 @@ public class Asteroid implements Poolable {
             return false;
         }
     }
+
 
 }
