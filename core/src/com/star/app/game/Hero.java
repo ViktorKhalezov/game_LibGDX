@@ -28,6 +28,7 @@ public class Hero {
     private StringBuilder sb;
     private Circle hitArea;
     private Weapon currentWeapon;
+    private int coins;
 
     public Circle getHitArea() {
         return hitArea;
@@ -48,6 +49,7 @@ public class Hero {
     public float getAngle() {
         return angle;
     }
+
 
     public Hero(GameController gc) {
         this.gc = gc;
@@ -77,11 +79,36 @@ public class Hero {
         hp -= amount;
     }
 
+    public void addCoins(int amount) {
+        coins += amount;
+    }
+
+    public void addHp(int amount) {
+        hp += amount;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getHpMax() {
+        return hpMax;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
+
     public void renderGUI(SpriteBatch batch, BitmapFont font) {
         sb.setLength(0);
         sb.append("SCORE: ").append(scoreView).append("\n");
         sb.append("HP: ").append(hp).append("/").append(hpMax).append("\n");
         sb.append("BULLETS: ").append(currentWeapon.getCurBullets()).append("/").append(currentWeapon.getMaxBullets()).append("\n");
+        sb.append("COINS: ").append(coins);
         font.draw(batch, sb, 20, 700);
     }
 
