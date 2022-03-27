@@ -17,6 +17,43 @@ public class ParticleController extends ObjectPool<Particle> {
                 setup(x, y, (float) Math.cos(randomAngle) * randomSpeed, (float) Math.sin(randomAngle) * randomSpeed, 1.2f, 2.0f, 1.8f, 1, 0, 0, 1, 1, 0, 0, 0.2f);
             }
         }
+
+        public void takePowerUpsEffect(PowerUp p) {
+            switch (p.getType()) {
+                case MEDKIT:
+                    for (int i = 0; i < 16; i++) {
+                        float angle = 6.28f / 16.0f * i;
+                        setup(p.getPosition().x, p.getPosition().y,
+                                (float) Math.cos(angle) * 100.0f, (float) Math.sin(angle) * 100.0f,
+                                0.8f, 3.0f, 2.5f,
+                                0, 1, 0, 1,
+                                0.2f, 1, 0, 0.4f);
+                    }
+                    break;
+                case MONEY:
+                    for (int i = 0; i < 16; i++) {
+                        float angle = 6.28f / 16.0f * i;
+                        setup(p.getPosition().x, p.getPosition().y,
+                                (float) Math.cos(angle) * 100.0f, (float) Math.sin(angle) * 100.0f,
+                                0.8f, 3.0f, 2.5f,
+                                1, 1, 0, 1,
+                                1, 0.7f, 0, 0.4f);
+                    }
+                    break;
+                case AMMOS:
+                    for (int i = 0; i < 16; i++) {
+                        float angle = 6.28f / 16.0f * i;
+                        setup(p.getPosition().x, p.getPosition().y,
+                                (float) Math.cos(angle) * 100.0f, (float) Math.sin(angle) * 100.0f,
+                                0.8f, 3.0f, 2.5f,
+                                1, 0, 0, 1,
+                                1, 0, 0.8f, 0.4f);
+                    }
+                    break;
+            }
+
+
+        }
     }
 
     private TextureRegion oneParticle;
@@ -83,5 +120,4 @@ public class ParticleController extends ObjectPool<Particle> {
     public float lerp(float value1, float value2, float point) {
         return value1 + (value2 - value1) * point;
     }
-
 }

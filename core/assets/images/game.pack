@@ -10,6 +10,20 @@ asteroid
   orig: 256, 256
   offset: 0, 0
   index: -1
+powerups
+  rotate: false
+  xy: 2, 260
+  size: 360, 240
+  orig: 360, 240
+  offset: 0, 0
+  index: -1
+simpleButton
+  rotate: false
+  xy: 2, 502
+  size: 320, 80
+  orig: 320, 80
+  offset: 0, 0
+  index: -1
 ship
   rotate: false
   xy: 260, 2
@@ -17,37 +31,23 @@ ship
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin
+smButton
   rotate: false
   xy: 326, 2
-  size: 32, 32
-  orig: 32, 32
+  size: 120, 32
+  orig: 120, 32
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 360, 2
+  xy: 448, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-cure
-  rotate: false
-  xy: 326, 36
-  size: 32, 27
-  orig: 32, 27
-  offset: 0, 0
-  index: -1
-ammo
-  rotate: false
-  xy: 360, 36
-  size: 32, 19
-  orig: 32, 19
-  offset: 0, 0
-  index: -1
 star16
   rotate: false
-  xy: 394, 2
+  xy: 326, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

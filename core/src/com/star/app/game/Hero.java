@@ -28,7 +28,11 @@ public class Hero {
     private StringBuilder sb;
     private Circle hitArea;
     private Weapon currentWeapon;
-    private int coins;
+    private int money;
+
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
 
     public Circle getHitArea() {
         return hitArea;
@@ -50,7 +54,6 @@ public class Hero {
         return angle;
     }
 
-
     public Hero(GameController gc) {
         this.gc = gc;
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
@@ -62,6 +65,7 @@ public class Hero {
         this.hp = hpMax;
         this.sb = new StringBuilder();
         this.hitArea = new Circle(position, 28);
+        this.money = 0;
 
         this.currentWeapon = new Weapon(gc, this,0.2f,1, 700, 100,
                 new Vector3[]{
@@ -79,28 +83,18 @@ public class Hero {
         hp -= amount;
     }
 
-    public void addCoins(int amount) {
-        coins += amount;
-    }
-
-    public void addHp(int amount) {
-        hp += amount;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public int getHpMax() {
-        return hpMax;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public Weapon getCurrentWeapon() {
-        return currentWeapon;
+    public void consume(PowerUp p){
+        switch (p.getType()){
+            case MEDKIT:
+                hp += p.getPower();
+                break;
+            case AMMOS:
+                currentWeapon.addAmmos(p.getPower());
+                break;
+            case MONEY:
+                money += p.getPower();
+                break;
+        }
     }
 
     public void renderGUI(SpriteBatch batch, BitmapFont font) {
@@ -108,7 +102,7 @@ public class Hero {
         sb.append("SCORE: ").append(scoreView).append("\n");
         sb.append("HP: ").append(hp).append("/").append(hpMax).append("\n");
         sb.append("BULLETS: ").append(currentWeapon.getCurBullets()).append("/").append(currentWeapon.getMaxBullets()).append("\n");
-        sb.append("COINS: ").append(coins);
+        sb.append("MONEY: ").append(money).append("\n");
         font.draw(batch, sb, 20, 700);
     }
 
@@ -221,6 +215,5 @@ public class Hero {
             velocity.y *= -0.5f;
         }
     }
-
 
 }
