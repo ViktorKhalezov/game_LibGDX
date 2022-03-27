@@ -3,7 +3,6 @@ package com.star.app.game;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.star.app.game.helpers.PullupType;
 import com.star.app.screen.ScreenManager;
 
 public class GameController {
@@ -11,9 +10,13 @@ public class GameController {
     private BulletController bulletController;
     private AsteroidController asteroidController;
     private ParticleController particleController;
-    private PullupController pullupController;
+    private PowerUpsController powerUpsController;
     private Hero hero;
     private Vector2 tempVec;
+
+    public PowerUpsController getPowerUpsController() {
+        return powerUpsController;
+    }
 
     public ParticleController getParticleController() {
         return particleController;
@@ -25,10 +28,6 @@ public class GameController {
 
     public BulletController getBulletController() {
         return bulletController;
-    }
-
-    public PullupController getPullupController() {
-        return pullupController;
     }
 
     public Background getBackground() {
@@ -44,7 +43,7 @@ public class GameController {
         this.bulletController = new BulletController(this);
         this.asteroidController = new AsteroidController(this);
         this.particleController = new ParticleController();
-        this.pullupController = new PullupController();
+        this.powerUpsController = new PowerUpsController(this);
         this.hero = new Hero(this);
         this.tempVec = new Vector2();
 
@@ -53,15 +52,14 @@ public class GameController {
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-150, 150), MathUtils.random(-150, 150), 1.0f);
         }
-
     }
 
     public void update(float dt) {
         background.update(dt);
         bulletController.update(dt);
         asteroidController.update(dt);
-        pullupController.update();
         particleController.update(dt);
+        powerUpsController.update(dt);
         hero.update(dt);
         checkCollisions();
     }
@@ -84,9 +82,6 @@ public class GameController {
 
                 if (a.takeDamage(2)) {
                     hero.addScore(a.getHpMax() * 50);
-                    if(a.isActive() == false) {
-                        pullupArise(a.getPosition().x, a.getPosition().y);
-                    }
                 }
                 hero.takeDamage(2);
             }
@@ -106,10 +101,10 @@ public class GameController {
                             0.0f, 0.1f, 1.0f, 0.0f);
 
                     b.deactivate();
-                    if (a.takeDamage(1)) {
+                    if (a.takeDamage(hero.getCurrentWeapon().getDamage())) {
                         hero.addScore(a.getHpMax() * 100);
-                        if(a.isActive() == false) {
-                            pullupArise(a.getPosition().x, a.getPosition().y);
+                        for (int k = 0; k < 3; k++) {
+                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f );
                         }
                     }
                     break;
@@ -117,42 +112,14 @@ public class GameController {
             }
         }
 
-        //столкновение героя и pullups
-        for(int i = 0; i < pullupController.getActiveList().size(); i++) {
-            Pullup pullup = pullupController.getActiveList().get(i);
-            if(hero.getHitArea().overlaps(pullup.getHitArea())) {
-                getBonuses(pullup.getType(), pullup.getPoints());
-                pullup.deactivate();
+        // Столкновение поверапсов и героя
+        for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
+            PowerUp pu = powerUpsController.getActiveList().get(i);
+            if (hero.getHitArea().contains(pu.getPosition())) {
+                hero.consume(pu);
+                particleController.getEffectBuilder().takePowerUpsEffect(pu);
+                pu.deactivate();
             }
-        }
-
-    }
-
-
-    public void pullupArise(float x, float y) {
-        int probabilityNumber = MathUtils.random(1, 3);
-        if(probabilityNumber == 1) {
-            pullupController.setup(x, y);
-        }
-    }
-
-    private void getBonuses(PullupType type, int bonusPoints) {
-        switch(type) {
-            case AMMO:
-                Weapon currentWeapon = hero.getCurrentWeapon();
-                currentWeapon.addBullets(bonusPoints);
-                if(currentWeapon.getCurBullets() > currentWeapon.getMaxBullets()) {
-                    currentWeapon.setCurBullets(currentWeapon.getMaxBullets());
-                }
-                break;
-            case COIN:
-                hero.addCoins(bonusPoints);
-                break;
-            case CURE:
-                hero.addHp(bonusPoints);
-                if(hero.getHp() > hero.getHpMax()) {
-                    hero.setHp(hero.getHpMax());
-                }
         }
     }
 
