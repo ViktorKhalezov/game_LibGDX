@@ -54,6 +54,14 @@ public class Hero {
         return angle;
     }
 
+    public int getHp() {
+        return hp;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
     public Hero(GameController gc) {
         this.gc = gc;
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");

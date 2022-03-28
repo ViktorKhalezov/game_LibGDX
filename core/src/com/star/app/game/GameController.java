@@ -62,6 +62,9 @@ public class GameController {
         powerUpsController.update(dt);
         hero.update(dt);
         checkCollisions();
+        if(hero.getHp() <= 0) {
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER);
+        }
     }
 
 
