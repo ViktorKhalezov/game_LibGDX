@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.star.app.screen.ScreenManager;
 
 public class Assets {
+
     private static final Assets ourInstance = new Assets();
 
     public static Assets getInstance() {
@@ -48,7 +49,9 @@ public class Assets {
             case GAMEOVER:
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 createStandardFont(72);
-                createStandardFont(32);
+                createStandardFont(48);
+                createStandardFont(24);
+                break;
         }
     }
 
