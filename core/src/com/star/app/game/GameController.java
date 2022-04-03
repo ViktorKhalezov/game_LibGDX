@@ -2,11 +2,14 @@ package com.star.app.game;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
 import com.star.app.screen.ScreenManager;
+import com.star.app.screen.utils.Assets;
 
 public class GameController {
 
@@ -18,6 +21,19 @@ public class GameController {
     private Hero hero;
     private Vector2 tempVec;
     private Stage stage;
+    private int level;
+    private boolean levelUp;
+    private float levelTitleTimer;
+
+
+    public boolean isLevelUp() {
+        return levelUp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
 
     public Stage getStage() {
         return stage;
@@ -57,6 +73,9 @@ public class GameController {
         this.tempVec = new Vector2();
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.stage.addActor(hero.getShop());
+        this.level = 1;
+        this.levelUp = true;
+        levelTitleTimer = 1.0f;
         Gdx.input.setInputProcessor(stage);
 
         for (int i = 0; i < 3; i++) {
@@ -67,6 +86,7 @@ public class GameController {
     }
 
     public void update(float dt) {
+        levelTitleTimer -= dt;
         background.update(dt);
         bulletController.update(dt);
         asteroidController.update(dt);
@@ -99,7 +119,7 @@ public class GameController {
                 if (a.takeDamage(2)) {
                     hero.addScore(a.getHpMax() * 50);
                 }
-                hero.takeDamage(2);
+                hero.takeDamage(a.getDamage());
             }
         }
 
@@ -128,19 +148,48 @@ public class GameController {
             }
         }
 
+        nextLevel();
         // Столкновение поверапсов и героя
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp pu = powerUpsController.getActiveList().get(i);
+            if(hero.getMagnetArea().contains(pu.getPosition())) {
+                tempVec.set(pu.getPosition()).sub(hero.getPosition()).nor();
+                pu.getVelocity().mulAdd(tempVec, -100.0f);
+            }
             if (hero.getHitArea().contains(pu.getPosition())) {
                 hero.consume(pu);
                 particleController.getEffectBuilder().takePowerUpsEffect(pu);
                 pu.deactivate();
             }
         }
+
     }
 
     public void dispose(){
         background.dispose();
     }
 
+    public void nextLevel() {
+        if(asteroidController.getActiveList().size() == 0) {
+            level++;
+            for (int i = 0; i < 3; i++) {
+                asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
+                        MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
+                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), 1.0f);
+            }
+            levelUp = true;
+        }
+    }
+
+    public void renderLevelUp(SpriteBatch batch, BitmapFont font) {
+        if(isLevelUp()) {
+            levelTitleTimer = 1.0f;
+            levelUp = false;
+        }
+        if(levelTitleTimer > 0) {
+           font.draw(batch, "Level " + getLevel(), 0, 600, ScreenManager.SCREEN_WIDTH, Align.center, false);
+       }
+    }
+
 }
+

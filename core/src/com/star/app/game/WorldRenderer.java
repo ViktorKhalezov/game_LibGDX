@@ -3,7 +3,9 @@ package com.star.app.game;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
 public class WorldRenderer {
@@ -12,11 +14,13 @@ public class WorldRenderer {
     private SpriteBatch batch;
     private BitmapFont font32;
     private StringBuilder sb;
+    private BitmapFont font72;
 
     public WorldRenderer(GameController gc, SpriteBatch batch) {
         this.gc = gc;
         this.batch = batch;
         this.font32 = Assets.getInstance().getAssetManager().get("fonts/font32.ttf", BitmapFont.class);
+        this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf", BitmapFont.class);
         this.sb = new StringBuilder();
     }
 
@@ -30,9 +34,14 @@ public class WorldRenderer {
         gc.getPowerUpsController().render(batch);
         gc.getHero().render(batch);
         gc.getHero().renderGUI(batch, font32);
+        gc.renderLevelUp(batch, font72);
         batch.end();
 
         gc.getStage().draw();
+
+
+
+
     }
 
 }

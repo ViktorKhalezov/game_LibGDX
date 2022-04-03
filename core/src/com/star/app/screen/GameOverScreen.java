@@ -60,6 +60,7 @@ public class GameOverScreen extends AbstractScreen {
         sb.setLength(0);
         sb.append("SCORE: ").append(defeatedHero.getScore()).append("\n");
         sb.append("MONEY: ").append(defeatedHero.getMoney()).append("\n");
+        sb.append("LEVEL: ").append(defeatedHero.getGc().getLevel()).append("\n");
         font48.draw(batch, sb, 0, 400,ScreenManager.SCREEN_WIDTH, Align.center, false);
         font24.draw(batch, "Tap screen to return to main menu", 0, 40,
                 ScreenManager.SCREEN_WIDTH, Align.center, false);
