@@ -38,11 +38,20 @@ public class Hero {
     private int hpMax;
     private StringBuilder sb;
     private Circle hitArea;
+    private Circle magnetArea;
     private Weapon currentWeapon;
     private int money;
     private Shop shop;
     private Weapon[] weapons;
     private int weaponNum;
+
+    public GameController getGc() {
+        return gc;
+    }
+
+    public Circle getMagnetArea() {
+        return magnetArea;
+    }
 
     public Shop getShop() {
         return shop;
@@ -99,6 +108,7 @@ public class Hero {
         this.hp = hpMax;
         this.sb = new StringBuilder();
         this.hitArea = new Circle(position, 28);
+        this.magnetArea = new Circle(position, 96);
         this.money = 1000;
         this.shop = new Shop(this);
         createWeapons();
@@ -160,6 +170,7 @@ public class Hero {
         sb.append("HP: ").append(hp).append("/").append(hpMax).append("\n");
         sb.append("BULLETS: ").append(currentWeapon.getCurBullets()).append("/").append(currentWeapon.getMaxBullets()).append("\n");
         sb.append("MONEY: ").append(money).append("\n");
+        sb.append("LEVEL: ").append(gc.getLevel()).append("\n");
         font.draw(batch, sb, 20, 700);
     }
 
@@ -232,6 +243,7 @@ public class Hero {
         }
         position.mulAdd(velocity, dt);
         hitArea.setPosition(position);
+        magnetArea.setPosition(position);
         float stopKoef = 1.0f - dt;
         if (stopKoef < 0.0f) {
             stopKoef = 0.0f;

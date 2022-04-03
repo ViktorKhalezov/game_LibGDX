@@ -18,6 +18,7 @@ public class Asteroid implements Poolable {
     private Vector2 velocity;
     private boolean active;
     private int hpMax;
+    private int damage;
     private int hp;
     private float angle;
     private float rotationSpeed;
@@ -26,6 +27,10 @@ public class Asteroid implements Poolable {
 
     private final float BASE_SIZE = 256.0f;
     private final float BASE_RADIUS = BASE_SIZE / 2;
+
+    public int getDamage() {
+        return damage;
+    }
 
     public float getScale() {
         return scale;
@@ -93,7 +98,8 @@ public class Asteroid implements Poolable {
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
-        hpMax = (int) (10 * scale);
+        hpMax = (int) (10 * scale) * gc.getLevel();
+        damage = (int) (10 * scale) * gc.getLevel();
         hp = hpMax;
         angle = MathUtils.random(0.0f, 360.0f);
         rotationSpeed = MathUtils.random(-180.0f, 180.0f);
