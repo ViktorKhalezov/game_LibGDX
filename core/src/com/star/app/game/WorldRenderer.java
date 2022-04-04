@@ -13,8 +13,8 @@ public class WorldRenderer {
     private GameController gc;
     private SpriteBatch batch;
     private BitmapFont font32;
-    private StringBuilder sb;
     private BitmapFont font72;
+    private StringBuilder sb;
 
     public WorldRenderer(GameController gc, SpriteBatch batch) {
         this.gc = gc;
@@ -24,7 +24,7 @@ public class WorldRenderer {
         this.sb = new StringBuilder();
     }
 
-    public void render () {
+    public void render() {
         ScreenUtils.clear(0, 0, 0.5f, 1);
         batch.begin();
         gc.getBackground().render(batch);
@@ -32,16 +32,18 @@ public class WorldRenderer {
         gc.getAsteroidController().render(batch);
         gc.getParticleController().render(batch);
         gc.getPowerUpsController().render(batch);
+        gc.getInfoController().render(batch, font32);
         gc.getHero().render(batch);
         gc.getHero().renderGUI(batch, font32);
-        gc.renderLevelUp(batch, font72);
+        if (gc.getTimer() < 3) {
+            sb.setLength(0);
+            sb.append("Level ").append(gc.getLevel());
+            font72.draw(batch, sb, 0, ScreenManager.HALF_SCREEN_HEIGHT,
+                    ScreenManager.SCREEN_WIDTH, Align.center, false);
+        }
         batch.end();
 
         gc.getStage().draw();
-
-
-
-
     }
 
 }

@@ -12,13 +12,13 @@ import com.star.app.screen.utils.Assets;
 
 
 public class Asteroid implements Poolable {
+
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
     private int hpMax;
-    private int damage;
     private int hp;
     private float angle;
     private float rotationSpeed;
@@ -27,10 +27,6 @@ public class Asteroid implements Poolable {
 
     private final float BASE_SIZE = 256.0f;
     private final float BASE_RADIUS = BASE_SIZE / 2;
-
-    public int getDamage() {
-        return damage;
-    }
 
     public float getScale() {
         return scale;
@@ -79,17 +75,17 @@ public class Asteroid implements Poolable {
         position.mulAdd(velocity, dt);
         angle += rotationSpeed * dt;
 
-        if (position.x < -200) {
-            position.x = ScreenManager.SCREEN_WIDTH + 200;
+        if (position.x < -hitArea.radius) {
+            position.x = ScreenManager.SCREEN_WIDTH + hitArea.radius;
         }
-        if (position.x > ScreenManager.SCREEN_WIDTH + 200) {
-            position.x = -200;
+        if (position.x > ScreenManager.SCREEN_WIDTH + hitArea.radius) {
+            position.x = -hitArea.radius;
         }
-        if (position.y < -200) {
-            position.y = ScreenManager.SCREEN_HEIGHT + 200;
+        if (position.y < -hitArea.radius) {
+            position.y = ScreenManager.SCREEN_HEIGHT + hitArea.radius;
         }
-        if (position.y > ScreenManager.SCREEN_HEIGHT + 200) {
-            position.y = -200;
+        if (position.y > ScreenManager.SCREEN_HEIGHT + hitArea.radius) {
+            position.y = -hitArea.radius;
         }
         hitArea.setPosition(position);
     }
@@ -98,8 +94,7 @@ public class Asteroid implements Poolable {
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
-        hpMax = (int) (10 * scale) * gc.getLevel();
-        damage = (int) (10 * scale) * gc.getLevel();
+        hpMax = (int) ((gc.getLevel() * 3 + 7) * scale);
         hp = hpMax;
         angle = MathUtils.random(0.0f, 360.0f);
         rotationSpeed = MathUtils.random(-180.0f, 180.0f);
@@ -113,18 +108,23 @@ public class Asteroid implements Poolable {
         if (hp <= 0) {
             deactivate();
             if (scale > 0.41f) {
-                gc.getAsteroidController().setup(position.x, position.y,
-                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
-                gc.getAsteroidController().setup(position.x, position.y,
-                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
-                gc.getAsteroidController().setup(position.x, position.y,
-                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
+                for (int i = 0; i < 5; i++) {
+                    if (MathUtils.random() < 0.5) {
+                        gc.getAsteroidController().setup(position.x, position.y,
+                                MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
+                    }
+                }
+//                gc.getAsteroidController().setup(position.x, position.y,
+//                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
+//                gc.getAsteroidController().setup(position.x, position.y,
+//                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
+//                gc.getAsteroidController().setup(position.x, position.y,
+//                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.3f);
             }
             return true;
         } else {
             return false;
         }
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.star.app.game;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -18,25 +19,34 @@ public class GameController {
     private AsteroidController asteroidController;
     private ParticleController particleController;
     private PowerUpsController powerUpsController;
+    private InfoController infoController;
     private Hero hero;
     private Vector2 tempVec;
     private Stage stage;
+    private boolean pause;
     private int level;
-    private boolean levelUp;
-    private float levelTitleTimer;
+    private float timer;
+    private Music music;
 
 
-    public boolean isLevelUp() {
-        return levelUp;
+    public float getTimer() {
+        return timer;
     }
 
     public int getLevel() {
         return level;
     }
 
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
 
     public Stage getStage() {
         return stage;
+    }
+
+    public InfoController getInfoController() {
+        return infoController;
     }
 
     public PowerUpsController getPowerUpsController() {
@@ -69,16 +79,23 @@ public class GameController {
         this.asteroidController = new AsteroidController(this);
         this.particleController = new ParticleController();
         this.powerUpsController = new PowerUpsController(this);
+        this.infoController = new InfoController();
         this.hero = new Hero(this);
         this.tempVec = new Vector2();
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.stage.addActor(hero.getShop());
-        this.level = 1;
-        this.levelUp = true;
-        levelTitleTimer = 1.0f;
         Gdx.input.setInputProcessor(stage);
+        this.level = 1;
+        generateBigAsteroids(2);
 
-        for (int i = 0; i < 3; i++) {
+        this.music = Assets.getInstance().getAssetManager().get("audio/mortal.mp3");
+        this.music.setLooping(true);
+        this.music.play();
+
+    }
+
+    public void generateBigAsteroids(int count) {
+        for (int i = 0; i < count; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-150, 150), MathUtils.random(-150, 150), 1.0f);
@@ -86,17 +103,26 @@ public class GameController {
     }
 
     public void update(float dt) {
-        levelTitleTimer -= dt;
+        if (pause) {
+            return;
+        }
+        timer += dt;
         background.update(dt);
         bulletController.update(dt);
         asteroidController.update(dt);
         particleController.update(dt);
         powerUpsController.update(dt);
+        infoController.update(dt);
         hero.update(dt);
         stage.act(dt);
         checkCollisions();
-        if(!hero.isAlive()){
+        if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
+        }
+        if (asteroidController.getActiveList().size() == 0) {
+            level++;
+            generateBigAsteroids(level + 2);
+            timer = 0;
         }
     }
 
@@ -119,7 +145,7 @@ public class GameController {
                 if (a.takeDamage(2)) {
                     hero.addScore(a.getHpMax() * 50);
                 }
-                hero.takeDamage(a.getDamage());
+                hero.takeDamage(2 * level);
             }
         }
 
@@ -140,7 +166,7 @@ public class GameController {
                     if (a.takeDamage(hero.getCurrentWeapon().getDamage())) {
                         hero.addScore(a.getHpMax() * 100);
                         for (int k = 0; k < 3; k++) {
-                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f );
+                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f);
                         }
                     }
                     break;
@@ -148,47 +174,24 @@ public class GameController {
             }
         }
 
-        nextLevel();
         // Столкновение поверапсов и героя
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp pu = powerUpsController.getActiveList().get(i);
-            if(hero.getMagnetArea().contains(pu.getPosition())) {
-                tempVec.set(pu.getPosition()).sub(hero.getPosition()).nor();
-                pu.getVelocity().mulAdd(tempVec, -100.0f);
+            if (hero.getMagneticField().contains(pu.getPosition())) {
+                tempVec.set(hero.getPosition()).sub(pu.getPosition()).nor();
+                pu.getVelocity().mulAdd(tempVec, 100);
             }
+
             if (hero.getHitArea().contains(pu.getPosition())) {
                 hero.consume(pu);
                 particleController.getEffectBuilder().takePowerUpsEffect(pu);
                 pu.deactivate();
             }
         }
-
     }
 
-    public void dispose(){
+    public void dispose() {
         background.dispose();
-    }
-
-    public void nextLevel() {
-        if(asteroidController.getActiveList().size() == 0) {
-            level++;
-            for (int i = 0; i < 3; i++) {
-                asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
-                        MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
-                        MathUtils.random(-150, 150), MathUtils.random(-150, 150), 1.0f);
-            }
-            levelUp = true;
-        }
-    }
-
-    public void renderLevelUp(SpriteBatch batch, BitmapFont font) {
-        if(isLevelUp()) {
-            levelTitleTimer = 1.0f;
-            levelUp = false;
-        }
-        if(levelTitleTimer > 0) {
-           font.draw(batch, "Level " + getLevel(), 0, 600, ScreenManager.SCREEN_WIDTH, Align.center, false);
-       }
     }
 
 }

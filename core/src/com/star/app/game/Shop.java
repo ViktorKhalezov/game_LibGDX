@@ -42,6 +42,7 @@ public class Shop extends Group {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 thisShop.setVisible(false);
+                hero.setPause(false);
             }
         });
         btnClose.setTransform(true);
@@ -96,6 +97,23 @@ public class Shop extends Group {
 
         btnWeapon.setPosition(20, 100);
         this.addActor(btnWeapon);
+
+
+        final TextButton btnMagnet = new TextButton("Magnet", textButtonStyle);
+        btnMagnet.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(hero.isMoneyEnough(Hero.Skill.MAGNET.cost)){
+                    if (hero.upgrade(Hero.Skill.MAGNET)){
+                        hero.decreaseMoney(Hero.Skill.MAGNET.cost);
+                    };
+                }
+            }
+        });
+
+        btnMagnet.setPosition(20, 10);
+        this.addActor(btnMagnet);
+
 
         this.setPosition(20, 20);
         setVisible(false);
