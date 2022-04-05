@@ -8,6 +8,7 @@ import com.star.app.screen.utils.Assets;
 public class BulletController extends ObjectPool<Bullet> {
     private TextureRegion bulletTexture;
     private GameController gc;
+    private Ship owner;
 
     @Override
     protected Bullet newObject() {
@@ -26,8 +27,8 @@ public class BulletController extends ObjectPool<Bullet> {
         }
     }
 
-    public void setup(float x, float y, float vx, float vy){
-        getActiveElement().activate(x, y, vx, vy);
+    public void setup(float x, float y, float vx, float vy, Ship owner){
+        getActiveElement().activate(x, y, vx, vy, owner);
     }
 
     public void update(float dt) {

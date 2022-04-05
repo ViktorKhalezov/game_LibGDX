@@ -22,6 +22,18 @@ public class Ship {
     protected int weaponNum;
     protected Weapon[] weapons;
 
+    public int getHpMax() {
+        return hpMax;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
+    public float getEnginePower() {
+        return enginePower;
+    }
+
     public GameController getGc() {
         return gc;
     }
