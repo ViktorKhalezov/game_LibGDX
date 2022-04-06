@@ -33,7 +33,6 @@ public class Hero extends Ship {
     private Shop shop;
     private Circle magneticField;
 
-
     public Circle getMagneticField() {
         return magneticField;
     }
@@ -72,6 +71,7 @@ public class Hero extends Ship {
         this.money = 1000;
         this.shop = new Shop(this);
         this.sb = new StringBuilder();
+        this.ownerType = OwnerType.PLAYER;
     }
 
     public void addScore(int amount) {
@@ -88,17 +88,17 @@ public class Hero extends Ship {
                     hp = hpMax;
                 }
                 sb.append("HP +").append(hp - oldHP);
-                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb, Color.GREEN);
+                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb,Color.GREEN );
                 break;
             case AMMOS:
                 int count = currentWeapon.addAmmos(p.getPower());
                 sb.append("AMMOS +").append(count);
-                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb, Color.RED);
+                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb,Color.RED );
                 break;
             case MONEY:
                 money += p.getPower();
                 sb.append("MONEY +").append(p.getPower());
-                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb, Color.YELLOW);
+                gc.getInfoController().setup(p.getPosition().x, p.getPosition().y, sb,Color.YELLOW );
                 break;
         }
     }
@@ -168,8 +168,7 @@ public class Hero extends Ship {
             angle -= 180 * dt;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
-            velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+            accelerate(dt);
 
             float bx = position.x + MathUtils.cosDeg(angle + 180) * 25;
             float by = position.y + MathUtils.sinDeg(angle + 180) * 25;
@@ -185,8 +184,7 @@ public class Hero extends Ship {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            velocity.x += MathUtils.cosDeg(angle) * enginePower * -0.5f * dt;
-            velocity.y += MathUtils.sinDeg(angle) * enginePower * -0.5f * dt;
+            brake(dt);
 
             float bx = position.x + MathUtils.cosDeg(angle - 90) * 25;
             float by = position.y + MathUtils.sinDeg(angle - 90) * 25;
@@ -223,7 +221,5 @@ public class Hero extends Ship {
             }
         }
     }
-
-
 
 }
