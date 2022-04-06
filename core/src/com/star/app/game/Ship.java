@@ -2,6 +2,7 @@ package com.star.app.game;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.star.app.screen.ScreenManager;
@@ -21,21 +22,14 @@ public class Ship {
     protected Weapon currentWeapon;
     protected int weaponNum;
     protected Weapon[] weapons;
-
-    public int getHpMax() {
-        return hpMax;
-    }
-
-    public void setAngle(float angle) {
-        this.angle = angle;
-    }
-
-    public float getEnginePower() {
-        return enginePower;
-    }
+    protected OwnerType ownerType;
 
     public GameController getGc() {
         return gc;
+    }
+
+    public OwnerType getOwnerType() {
+        return ownerType;
     }
 
     public Weapon getCurrentWeapon() {
@@ -73,6 +67,16 @@ public class Ship {
         this.currentWeapon = weapons[weaponNum];
     }
 
+    public void accelerate(float dt){
+        velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
+        velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+    }
+
+    public void brake(float dt){
+        velocity.x += MathUtils.cosDeg(angle) * enginePower * -0.5f * dt;
+        velocity.y += MathUtils.sinDeg(angle) * enginePower * -0.5f * dt;
+    }
+
     public void update(float dt) {
         fireTimer += dt;
         position.mulAdd(velocity, dt);
@@ -94,8 +98,8 @@ public class Ship {
         weapons = new Weapon[]{
                 new Weapon(gc, this, 0.2f, 1, 400, 100,
                         new Vector3[]{
-                                new Vector3(28, -90, -10),
-                                new Vector3(28, 90, 10),
+                                new Vector3(28, -90, 0),
+                                new Vector3(28, 90, 0),
                         }),
                 new Weapon(gc, this, 0.2f, 1, 500, 200,
                         new Vector3[]{
