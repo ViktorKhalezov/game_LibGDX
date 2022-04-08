@@ -32,6 +32,7 @@ public class Hero extends Ship {
     private int money;
     private Shop shop;
     private Circle magneticField;
+    private int availableRockets;
 
     public Circle getMagneticField() {
         return magneticField;
@@ -66,16 +67,23 @@ public class Hero extends Ship {
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
         this.position = new Vector2(640, 360);
         this.hitArea = new Circle(position, 28);
-
         this.magneticField = new Circle(position, 50);
-        this.money = 1000;
+        this.money = 3000;
         this.shop = new Shop(this);
         this.sb = new StringBuilder();
         this.ownerType = OwnerType.PLAYER;
     }
 
+    public int getAvailableRockets() {
+        return availableRockets;
+    }
+
     public void addScore(int amount) {
         score += amount;
+    }
+
+    public void addRocket() {
+        availableRockets++;
     }
 
     public void consume(PowerUp p) {
@@ -141,6 +149,7 @@ public class Hero extends Ship {
         sb.append("BULLETS: ").append(currentWeapon.getCurBullets()).append("/").append(currentWeapon.getMaxBullets()).append("\n");
         sb.append("MONEY: ").append(money).append("\n");
         sb.append("MAGNETIC: ").append((int) magneticField.radius).append("\n");
+        sb.append("ROCKETS: ").append(availableRockets).append("\n");
         sb.append("TIMER: ").append((int) gc.getTimer()).append("\n");
         font.draw(batch, sb, 20, 700);
     }
@@ -158,6 +167,19 @@ public class Hero extends Ship {
             shop.setVisible(true);
             gc.setPause(true);
         }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.R)) {
+           if(availableRockets > 0) {
+               if(gc.getRocketController().getFireTimer() > 2.0f) {
+                   gc.getRocketController().setFireTimer(0.0f);
+                   float rocketVx = velocity.x + MathUtils.cosDeg(angle) * gc.getRocketController().getRocketSpeed();
+                   float rocketVy = velocity.y + MathUtils.sinDeg(angle) * gc.getRocketController().getRocketSpeed();
+                   gc.getRocketController().setup(position.x, position.y, rocketVx, rocketVy, angle);
+                   availableRockets--;
+               }
+           }
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             tryToFire();
         }
