@@ -36,7 +36,6 @@ public class Bot extends Ship implements Poolable {
         active = true;
     }
 
-
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32,
                 64, 64, 1, 1, angle);

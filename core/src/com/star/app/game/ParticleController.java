@@ -54,6 +54,17 @@ public class ParticleController extends ObjectPool<Particle> {
             }
         }
 
+        public void takeRocketExplosionEffect(Rocket rocket) {
+            for (int i = 0; i < 16; i++) {
+                float angle = 6.28f / 16.0f * i;
+                setup(rocket.getPosition().x, rocket.getPosition().y,
+                        (float) Math.cos(angle) * 100.0f, (float) Math.sin(angle) * 100.0f,
+                        1.5f, 3.0f, 2.5f,
+                        1.5f, 0.5f, 0.5f, 1,
+                        0.0f, 0.0f, 0.0f, 0.4f);
+            }
+        }
+
         public void bulletCollideWithAsteroid(Bullet b) {
             setup(b.getPosition().x + MathUtils.random(-4, 4), b.getPosition().y + MathUtils.random(-4, 4),
                     b.getVelocity().x * -0.3f + MathUtils.random(-30, 30), b.getVelocity().y * -0.3f + MathUtils.random(-30, 30),
@@ -92,7 +103,23 @@ public class ParticleController extends ObjectPool<Particle> {
             }
 
         }
+
+        public void createRocketTrace(Rocket rocket) {
+            float bx = rocket.getPosition().x + MathUtils.cosDeg(rocket.getAngle() + 180) * 65;
+            float by = rocket.getPosition().y + MathUtils.sinDeg(rocket.getAngle() + 180) * 65;
+
+            for (int i = 0; i < 2; i++) {
+                setup(bx + MathUtils.random(-4, 4), by + MathUtils.random(-4, 4),
+                        rocket.getVelocity().x * -0.1f + MathUtils.random(-20, 20), rocket.getVelocity().y * -0.1f + MathUtils.random(-20, 20),
+                        0.4f,
+                        1.2f, 0.2f,
+                        1.0f, 0.0f, 0.0f, 1.0f,
+                        1.0f, 0.0f, 0.0f, 0.0f);
+            }
+        }
+
     }
+
 
     private TextureRegion oneParticle;
     private EffectBuilder effectBuilder;

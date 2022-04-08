@@ -56,6 +56,10 @@ public class Ship {
         return hp > 0;
     }
 
+    public int getHpMax() {
+        return hpMax;
+    }
+
     public Ship(GameController gc, float enginePower, int hpMax) {
         this.gc = gc;
         this.enginePower = enginePower;

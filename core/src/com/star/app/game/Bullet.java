@@ -13,6 +13,7 @@ public class Bullet implements Poolable {
     private boolean active;
     private Ship owner;
 
+
     public Ship getOwner() {
         return owner;
     }

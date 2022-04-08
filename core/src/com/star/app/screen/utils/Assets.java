@@ -42,6 +42,8 @@ public class Assets {
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 assetManager.load("audio/mortal.mp3", Music.class);
                 assetManager.load("audio/shoot.mp3", Sound.class);
+                assetManager.load("audio/explose.mp3", Sound.class);
+                assetManager.load("audio/explose2.mp3", Sound.class);
                 createStandardFont(72);
                 createStandardFont(32);
                 createStandardFont(24);

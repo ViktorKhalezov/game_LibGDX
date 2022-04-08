@@ -115,6 +115,21 @@ public class Shop extends Group {
         this.addActor(btnMagnet);
 
 
+        final TextButton btnRocket = new TextButton("Rocket", textButtonStyle);
+        btnRocket.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(hero.isMoneyEnough(hero.getGc().getRocketController().getCost())){
+                    hero.addRocket();
+                    hero.decreaseMoney(hero.getGc().getRocketController().getCost());
+                };
+            }
+        });
+
+        btnRocket.setPosition(120, 300);
+        this.addActor(btnRocket);
+
+
         this.setPosition(20, 20);
         setVisible(false);
         skin.dispose();

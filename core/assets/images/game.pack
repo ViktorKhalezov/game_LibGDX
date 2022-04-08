@@ -38,9 +38,16 @@ ship
   orig: 64, 64
   offset: 0, 0
   index: -1
-smButton
+rocket
   rotate: false
   xy: 260, 84
+  size: 128, 32
+  orig: 128, 32
+  offset: 0, 0
+  index: -1
+smButton
+  rotate: false
+  xy: 390, 84
   size: 120, 32
   orig: 120, 32
   offset: 0, 0
